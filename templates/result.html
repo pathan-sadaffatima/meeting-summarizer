@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Meeting Result</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="result-header">
+
+            <h1>Meeting Result</h1>
+
+            <p class="file-name">
+                {{ filename }}
+            </p>
+
+        </header>
+
+
+        <div class="result-card">
+
+            <h2>Instruction Used</h2>
+
+            <p class="prompt-text">
+                {{ user_prompt }}
+            </p>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h2>Generated Result</h2>
+
+            <div class="generated-result">
+                {{ result }}
+            </div>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h2>Full Transcript</h2>
+
+            <div class="transcript">
+                {{ transcript }}
+            </div>
+
+        </div>
+
+
+        <div class="button-group">
+
+            <a href="{{ url_for('index') }}"
+               class="button">
+
+                Process Another Meeting
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

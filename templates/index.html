@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meeting Summarizer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Meeting Summarizer</h1>
+            <p>
+                Upload a meeting recording and generate a transcript and summary.
+            </p>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="upload-card">
+
+            <h2>Upload Audio</h2>
+
+            <form action="{{ url_for('upload') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <label for="audio">
+                    Select meeting audio
+                </label>
+
+                <input type="file"
+                       id="audio"
+                       name="audio"
+                       accept=".mp3,.wav,.m4a,.mp4,.aac,.ogg,.flac"
+                       required>
+
+
+                <label for="prompt">
+                    What would you like Gemini to do?
+                </label>
+
+                <textarea
+                    id="prompt"
+                    name="prompt"
+                    rows="5"
+                    placeholder="Enter your instruction here..."
+                >Summarize the meeting, including key decisions and action items. Also provide the full transcript in dialogue format, separating each speaker’s statements where possible.</textarea>
+
+
+                <p class="hint">
+                    You can change the instruction depending on what information you want from the meeting.
+                </p>
+
+
+                <button type="submit">
+                    Process Meeting
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
