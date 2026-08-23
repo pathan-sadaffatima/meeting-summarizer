@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Meeting History
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="result-header">
+
+            <h1>
+                Previous Meetings
+            </h1>
+
+            <p>
+                View meetings that have been processed and saved.
+            </p>
+
+        </header>
+
+
+        {% if meetings %}
+
+            <div class="history-list">
+
+                {% for meeting in meetings %}
+
+                    <div class="history-card">
+
+                        <div>
+
+                            <h2>
+                                {{ meeting["filename"] }}
+                            </h2>
+
+                            <p class="history-date">
+
+                                Processed:
+                                {{ meeting["created_at"] }}
+
+                            </p>
+
+                            <p class="history-prompt">
+
+                                {{ meeting["user_prompt"] }}
+
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="{{ url_for(
+                                'meeting_result',
+                                meeting_id=meeting['id']
+                            ) }}"
+                            class="button secondary"
+                        >
+
+                            View Result
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="result-card">
+
+                <h2>
+                    No Meetings Yet
+                </h2>
+
+                <p>
+                    Process a meeting to see it here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="button-group">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="button"
+            >
+
+                Process New Meeting
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

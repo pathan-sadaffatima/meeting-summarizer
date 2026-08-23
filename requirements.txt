@@ -2,3 +2,6 @@ Flask
 python-dotenv
 google-genai
 faster-whisper
+pyannote.audio
+torch
+torchaudio

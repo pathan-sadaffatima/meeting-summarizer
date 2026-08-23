@@ -20,6 +20,12 @@
             <p>
                 Upload a meeting recording and generate a transcript and summary.
             </p>
+            <a
+                href="{{ url_for('history') }}"
+                class="history-link"
+            >
+                View Previous Meetings
+            </a>
         </header>
 
         {% with messages = get_flashed_messages() %}
@@ -52,7 +58,7 @@
 
 
                 <label for="prompt">
-                    What would you like Gemini to do?
+                    What would you like to do?
                 </label>
 
                 <textarea
@@ -60,8 +66,7 @@
                     name="prompt"
                     rows="5"
                     placeholder="Enter your instruction here..."
-                >Summarize the meeting, including key decisions and action items. Also provide the full transcript in dialogue format, separating each speaker’s statements where possible.</textarea>
-
+                >Summarize this meeting transcript into key decisions and action items. Use the speaker-labelled transcript when referring to discussions or responsibilities.</textarea>
 
                 <p class="hint">
                     You can change the instruction depending on what information you want from the meeting.

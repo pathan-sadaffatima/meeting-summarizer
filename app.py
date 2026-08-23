@@ -12,10 +12,17 @@ from flask import (
 from transcriber import transcribe_audio
 from summarizer import process_meeting
 
+from database import (
+    initialize_database,
+    save_meeting,
+    get_meeting,
+    get_all_meetings
+)
 
 app = Flask(__name__)
 
 app.secret_key = "meeting-summarizer-secret-key"
+
 
 UPLOAD_FOLDER = "uploads"
 
@@ -31,6 +38,9 @@ ALLOWED_EXTENSIONS = {
     "ogg",
     "flac"
 }
+
+
+initialize_database()
 
 
 def allowed_file(filename):
@@ -55,7 +65,9 @@ def upload():
 
         flash("Please select an audio file.")
 
-        return redirect(url_for("index"))
+        return redirect(
+            url_for("index")
+        )
 
 
     file = request.files["audio"]
@@ -67,7 +79,9 @@ def upload():
 
         flash("No audio file selected.")
 
-        return redirect(url_for("index"))
+        return redirect(
+            url_for("index")
+        )
 
 
     if not user_prompt or not user_prompt.strip():
@@ -82,7 +96,9 @@ def upload():
 
         flash("Unsupported audio format.")
 
-        return redirect(url_for("index"))
+        return redirect(
+            url_for("index")
+        )
 
 
     os.makedirs(
@@ -92,6 +108,7 @@ def upload():
 
 
     filename = file.filename
+
 
     file_path = os.path.join(
         app.config["UPLOAD_FOLDER"],
@@ -115,12 +132,19 @@ def upload():
         )
 
 
-        return render_template(
-            "result.html",
-            filename=filename,
-            transcript=transcript,
-            result=result,
-            user_prompt=user_prompt
+        meeting_id = save_meeting(
+            filename,
+            transcript,
+            user_prompt,
+            result
+        )
+
+
+        return redirect(
+            url_for(
+                "meeting_result",
+                meeting_id=meeting_id
+            )
         )
 
 
@@ -130,12 +154,17 @@ def upload():
 
         error_message = str(error)
 
-        if "503" in error_message or "UNAVAILABLE" in error_message:
+
+        if (
+            "503" in error_message
+            or "UNAVAILABLE" in error_message
+        ):
 
             flash(
                 "The AI service is currently busy. "
                 "Please wait a moment and try again."
             )
+
 
         elif "429" in error_message:
 
@@ -144,12 +173,14 @@ def upload():
                 "Please wait and try again later."
             )
 
+
         else:
 
             flash(
-                "An error occurred while processing the meeting. "
-                "Please try again."
+                "An error occurred while processing "
+                "the meeting. Please try again."
             )
+
 
         return redirect(
             url_for("index")
@@ -167,6 +198,39 @@ def upload():
             except Exception:
 
                 pass
+            
+@app.route("/history")
+def history():
+
+    meetings = get_all_meetings()
+
+    return render_template(
+        "history.html",
+        meetings=meetings
+    )
+
+@app.route("/result/<int:meeting_id>")
+def meeting_result(meeting_id):
+
+    meeting = get_meeting(meeting_id)
+
+
+    if meeting is None:
+
+        flash("Meeting not found.")
+
+        return redirect(
+            url_for("index")
+        )
+
+
+    return render_template(
+        "result.html",
+        filename=meeting["filename"],
+        transcript=meeting["transcript"],
+        result=meeting["result"],
+        user_prompt=meeting["user_prompt"]
+    )
 
 
 if __name__ == "__main__":
